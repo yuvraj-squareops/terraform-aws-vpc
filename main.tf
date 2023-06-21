@@ -15,8 +15,18 @@ locals {
     protocol   = "-1"
     cidr_block = var.vpc_cidr
     }
-
   ]
+  enable_ipv6 = var.ipv6_enabled 
+  #assign_ipv6_address_on_creation = var.assign_ipv6_address_on_creation == true && var.ipv6_enabled == true ? true : false
+  public_subnet_assign_ipv6_address_on_creation = var.public_subnet_assign_ipv6_address_on_creation == true  && var.ipv6_enabled == true ? true : false
+  private_subnet_assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == true  && var.ipv6_enabled == true ? true : false
+  database_subnet_assign_ipv6_address_on_creation = var.database_subnet_assign_ipv6_address_on_creation == true  && var.ipv6_enabled == true ? true : false
+  intra_subnet_assign_ipv6_address_on_creation = var.intra_subnet_assign_ipv6_address_on_creation == true  && var.ipv6_enabled == true ? true : false
+  public_subnet_ipv6_prefixes   = [for az in range(0, var.availability_zones) : var.subnet_ipv6_prefixes["public_subnet_ipv6_prefixes"][az]]
+  private_subnet_ipv6_prefixes  = [for az in range(0, var.availability_zones) : var.subnet_ipv6_prefixes["private_subnet_ipv6_prefixes"][az]]
+  database_subnet_ipv6_prefixes = [for az in range(0, var.availability_zones) : var.subnet_ipv6_prefixes["database_subnet_ipv6_prefixes"][az]]
+  intra_subnet_ipv6_prefixes = [for az in range(0, var.availability_zones) : var.subnet_ipv6_prefixes["intra_subnet_ipv6_prefixes"][az]]
+  
 }
 data "aws_availability_zones" "available" {}
 data "aws_ec2_instance_type" "arch" {
@@ -53,8 +63,16 @@ module "vpc" {
   create_flow_log_cloudwatch_log_group            = local.create_flow_log_cloudwatch_log_group
   flow_log_max_aggregation_interval               = var.flow_log_max_aggregation_interval
   flow_log_cloudwatch_log_group_retention_in_days = var.flow_log_cloudwatch_log_group_retention_in_days
-
-
+  enable_ipv6                                   = local.enable_ipv6
+  #assign_ipv6_address_on_creation = local.assign_ipv6_address_on_creation
+  public_subnet_assign_ipv6_address_on_creation = local.public_subnet_assign_ipv6_address_on_creation
+  private_subnet_assign_ipv6_address_on_creation = local.private_subnet_assign_ipv6_address_on_creation
+  database_subnet_assign_ipv6_address_on_creation = local.database_subnet_assign_ipv6_address_on_creation
+  intra_subnet_assign_ipv6_address_on_creation = local.intra_subnet_assign_ipv6_address_on_creation
+  public_subnet_ipv6_prefixes   = local.public_subnet_ipv6_prefixes
+  private_subnet_ipv6_prefixes  = local.private_subnet_ipv6_prefixes
+  database_subnet_ipv6_prefixes = local.database_subnet_ipv6_prefixes
+  intra_subnet_ipv6_prefixes = local.intra_subnet_ipv6_prefixes
   # TAGS TO BE ASSOCIATED WITH EACH RESOURCE
 
   tags = tomap(
