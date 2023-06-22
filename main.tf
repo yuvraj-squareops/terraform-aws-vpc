@@ -22,11 +22,16 @@ locals {
   private_subnet_assign_ipv6_address_on_creation = var.private_subnet_assign_ipv6_address_on_creation == true  && var.ipv6_enabled == true ? true : false
   database_subnet_assign_ipv6_address_on_creation = var.database_subnet_assign_ipv6_address_on_creation == true  && var.ipv6_enabled == true ? true : false
   intra_subnet_assign_ipv6_address_on_creation = var.intra_subnet_assign_ipv6_address_on_creation == true  && var.ipv6_enabled == true ? true : false
-  public_subnet_ipv6_prefixes   = [for az in range(0, var.availability_zones) : var.subnet_ipv6_prefixes["public_subnet_ipv6_prefixes"][az]]
-  private_subnet_ipv6_prefixes  = [for az in range(0, var.availability_zones) : var.subnet_ipv6_prefixes["private_subnet_ipv6_prefixes"][az]]
-  database_subnet_ipv6_prefixes = [for az in range(0, var.availability_zones) : var.subnet_ipv6_prefixes["database_subnet_ipv6_prefixes"][az]]
-  intra_subnet_ipv6_prefixes = [for az in range(0, var.availability_zones) : var.subnet_ipv6_prefixes["intra_subnet_ipv6_prefixes"][az]]
+  # public_subnet_ipv6_prefixes   = [for az in range(0, var.availability_zones) : var.subnet_ipv6_prefixes["public_subnet_ipv6_prefixes"][az]]
+  # private_subnet_ipv6_prefixes  = [for az in range(0, var.availability_zones) : var.subnet_ipv6_prefixes["private_subnet_ipv6_prefixes"][az]]
+  # database_subnet_ipv6_prefixes = [for az in range(0, var.availability_zones) : var.subnet_ipv6_prefixes["database_subnet_ipv6_prefixes"][az]]
+  # intra_subnet_ipv6_prefixes = [for az in range(0, var.availability_zones) : var.subnet_ipv6_prefixes["intra_subnet_ipv6_prefixes"][az]]
   
+
+  public_subnet_ipv6_prefixes   = var.public_subnet_enabled ? [for i in range(var.availability_zones) : i] : []
+  private_subnet_ipv6_prefixes  = var.private_subnet_enabled ? [for i in range(var.availability_zones) : i + length(data.aws_availability_zones.available.names)] : []
+  database_subnet_ipv6_prefixes = var.database_subnet_enabled ? [for i in range(var.availability_zones) : i + 2*length(data.aws_availability_zones.available.names)] : []
+  intra_subnet_ipv6_prefixes = var.intra_subnet_enabled ? [for i in range(var.availability_zones) :  i + 3*length(data.aws_availability_zones.available.names)] : []
 }
 data "aws_availability_zones" "available" {}
 data "aws_ec2_instance_type" "arch" {

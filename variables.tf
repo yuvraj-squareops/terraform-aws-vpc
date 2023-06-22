@@ -166,41 +166,17 @@ variable "ipv6_enabled" {
   default     = false
 }
 
-# variable "private_subnet_ipv6_prefixes" {
-#   description = "Assigns IPv6 private subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list"
-#   type        = list(string)
-#   default     = []
+# variable "subnet_ipv6_prefixes" {
+#   description = "Assigns IPv6 database subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list"
+#   type        = map(list(number))
+#   default = {
+#     "public_subnet_ipv6_prefixes" = [1, 2, 3]
+#     "private_subnet_ipv6_prefixes" = [4, 5, 6]
+#     "database_subnet_ipv6_prefixes" = [7, 8, 9]
+#     "intra_subnet_ipv6_prefixes" = [10, 11, 12]
+#   }
 # }
 
-# variable "public_subnet_ipv6_prefixes" {
-#   description = "Assigns IPv6 public subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list"
-#   type        = list(string)
-#   default     = []
-# }
-
-# variable "intra_subnet_ipv6_prefixes" {
-#   description = "Assigns IPv6 outpost subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list"
-#   type        = list(string)
-#   default     = []
-# }
-
-variable "subnet_ipv6_prefixes" {
-  description = "Assigns IPv6 database subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list"
-  type        = map(list(number))
-  default = {
-    "public_subnet_ipv6_prefixes" = [1, 2, 3]
-    "private_subnet_ipv6_prefixes" = [4, 5, 6]
-    "database_subnet_ipv6_prefixes" = [7, 8, 9]
-    "intra_subnet_ipv6_prefixes" = [10, 11, 12]
-  }
-}
-
-
-# variable "assign_ipv6_address_on_creation" {
-#   description = "Assign IPv6 address on subnet, must be disabled to change IPv6 CIDRs. This is the IPv6 equivalent of map_public_ip_on_launch"
-#   type        = bool
-#   default     = false
-# }
 
 variable "private_subnet_assign_ipv6_address_on_creation" {
   description = "Assign IPv6 address on private subnet, must be disabled to change IPv6 CIDRs. This is the IPv6 equivalent of map_public_ip_on_launch"
